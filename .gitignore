@@ -1,0 +1,15 @@
+/migrations/
+/script
+.DS_Store
+package-lock.json
+truffle-config.js
+/node_modules/
+/build/
+yarn.lock
+node_modules
+
+#Buidler files
+cache
+artifacts
+
+
