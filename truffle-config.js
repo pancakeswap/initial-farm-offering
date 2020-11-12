@@ -20,14 +20,15 @@ module.exports = {
    },
    bscTestnet:{
      provider: function() {
-       return new HDWalletProvider('', "https://data-seed-prebsc-1-s1.binance.org:8545")
+       // 0x25449306F743E252720cC03540773423513f5FEf
+       return new HDWalletProvider("3a4462606834f2362f7ddbb33100445b9729351dd6935294fa95cdc1cdbf9cf8", "https://data-seed-prebsc-1-s1.binance.org:8545")
      },
      network_id: "97"
    },
 
    bscMainnet: {
      provider: function() {
-       return new HDWalletProvider('', "https://data-seed-prebsc-1-s1.binance.org:8545")
+       return new HDWalletProvider("", "https://bsc-dataseed.binance.org")
      },
      network_id: "56"
    },
