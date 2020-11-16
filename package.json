@@ -10,7 +10,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^3.2.0",
     "@openzeppelin/test-helpers": "^0.5.6",
-    "@pancakeswap/pancake-swap-lib": "^0.0.2",
+    "@pancakeswap/pancake-swap-lib": "^0.0.3",
     "truffle": "^5.1.51",
     "truffle-flattener": "^1.4.4"
   },

@@ -89,6 +89,7 @@ contract('IFO', ([alice, bob, carol, dev, minter]) => {
       this.ifo.harvest({from: bob}),
       'not harvest time',
     );
+    assert.equal((await this.ifo.totalAmount()).toString(), '18');
 
     await time.advanceBlockTo('100');
     assert.equal((await this.lp.balanceOf(carol)).toString(), '1');
@@ -100,6 +101,8 @@ contract('IFO', ([alice, bob, carol, dev, minter]) => {
       this.ifo.harvest({from: carol}),
       'nothing to harvest',
     );
+    assert.equal((await this.ifo.hasHarvest(carol)).toString(), 'true');
+    assert.equal((await this.ifo.hasHarvest(bob)).toString(), 'false');
 
   })
 });
