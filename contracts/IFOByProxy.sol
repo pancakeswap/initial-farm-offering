@@ -6,7 +6,7 @@ import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
 import '@pancakeswap/pancake-swap-lib/contracts/utils/ReentrancyGuard.sol';
 import "@pancakeswap/pancake-swap-lib/contracts/proxy/Initializable.sol";
 
-contract IFOByProxy is ReentrancyGuard {
+contract IFOByProxy is ReentrancyGuard, Initializable {
   using SafeMath for uint256;
   using SafeBEP20 for IBEP20;
 
@@ -41,7 +41,10 @@ contract IFOByProxy is ReentrancyGuard {
   event Deposit(address indexed user, uint256 amount);
   event Harvest(address indexed user, uint256 offeringAmount, uint256 excessAmount);
 
-  constructor(
+  constructor() public {
+  }
+
+  function initialize(
       IBEP20 _lpToken,
       IBEP20 _offeringToken,
       uint256 _startBlock,
@@ -49,7 +52,7 @@ contract IFOByProxy is ReentrancyGuard {
       uint256 _offeringAmount,
       uint256 _raisingAmount,
       address _adminAddress
-  ) public {
+  ) public initializer {
       lpToken = _lpToken;
       offeringToken = _offeringToken;
       startBlock = _startBlock;
