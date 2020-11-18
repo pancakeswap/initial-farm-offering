@@ -1,6 +1,6 @@
 pragma solidity 0.6.12;
 
-import "@openzeppelin/contracts/proxy/TransparentUpgradeableProxy.sol";
+import "@pancakeswap/pancake-swap-lib/contracts/proxy/TransparentUpgradeableProxy.sol";
 
 contract UpgradeProxy is TransparentUpgradeableProxy {
 
