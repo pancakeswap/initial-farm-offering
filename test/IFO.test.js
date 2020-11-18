@@ -105,4 +105,58 @@ contract('IFO', ([alice, bob, carol, dev, minter]) => {
     assert.equal((await this.ifo.hasHarvest(bob)).toString(), 'false');
 
   })
+
+  it('raise enough lp', async () => {
+    // 10 lp raising, 100 ifo to offer
+    this.ifo = await IFO.new(this.lp.address, this.ifoToken.address, '120', '170', '18', '18', alice, { from: minter });
+    await this.ifoToken.transfer(this.ifo.address, '100', { from: minter });
+
+    await this.lp.approve(this.ifo.address, '1000', { from: alice });
+    await this.lp.approve(this.ifo.address, '1000', { from: bob });
+    await this.lp.approve(this.ifo.address, '1000', { from: carol });
+    await expectRevert(
+      this.ifo.deposit('1', {from: bob}),
+      'not ifo time',
+    );
+
+    await time.advanceBlockTo('120');
+
+    await this.ifo.deposit('1', {from: bob});
+    await this.ifo.deposit('2', {from: alice});
+    await this.ifo.deposit('3', {from: carol});
+    await this.ifo.deposit('1', {from: bob});
+    await this.ifo.deposit('2', {from: alice});
+    await this.ifo.deposit('3', {from: carol});
+    await this.ifo.deposit('1', {from: bob});
+    await this.ifo.deposit('2', {from: alice});
+    await this.ifo.deposit('3', {from: carol});
+    assert.equal((await this.ifo.totalAmount()).toString(), '18');
+    assert.equal((await this.ifo.getUserAllocation(carol)).toString(), '500000');
+    assert.equal((await this.ifo.getUserAllocation(alice)).toString(), '333333');
+    assert.equal((await this.ifo.getOfferingAmount(carol)).toString(), '9');
+    assert.equal((await this.ifo.getOfferingAmount(minter)).toString(), '0');
+    assert.equal((await this.ifo.getOfferingAmount(bob)).toString(), '3');
+    assert.equal((await this.ifo.getRefundingAmount(carol)).toString(), '0');
+    assert.equal((await this.ifo.getRefundingAmount(bob)).toString(), '0');
+    await expectRevert(
+      this.ifo.harvest({from: bob}),
+      'not harvest time',
+    );
+    assert.equal((await this.ifo.totalAmount()).toString(), '18');
+
+    await time.advanceBlockTo('170');
+    assert.equal((await this.lp.balanceOf(carol)).toString(), '1');
+    assert.equal((await this.ifoToken.balanceOf(carol)).toString(), '0');
+    await this.ifo.harvest({from: carol});
+    assert.equal((await this.lp.balanceOf(carol)).toString(), '1');
+    assert.equal((await this.ifoToken.balanceOf(carol)).toString(), '9');
+    await expectRevert(
+      this.ifo.harvest({from: carol}),
+      'nothing to harvest',
+    );
+    assert.equal((await this.ifo.hasHarvest(carol)).toString(), 'true');
+    assert.equal((await this.ifo.hasHarvest(bob)).toString(), 'false');
+    assert.equal((await this.ifo.getAddressListLength()).toString(), '3');
+
+  })
 });

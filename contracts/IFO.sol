@@ -78,6 +78,7 @@ contract IFO is ReentrancyGuard {
 
   function harvest() public nonReentrant {
     require (block.number > endBlock, 'not harvest time');
+    require (userInfo[msg.sender].amount > 0, 'have you participated?');
     require (!userInfo[msg.sender].claimed, 'nothing to harvest');
     uint256 offeringTokenAmount = getOfferingAmount(msg.sender);
     uint256 refundingTokenAmount = getRefundingAmount(msg.sender);
@@ -93,15 +94,13 @@ contract IFO is ReentrancyGuard {
 
   // allocation 100000 means 0.1(10%), 1 meanss 0.000001(0.0001%), 1000000 means 1(100%)
   function getUserAllocation(address _user) public view returns(uint256) {
-    require (userInfo[_user].amount > 0, 'have you participated?');
     return userInfo[_user].amount.mul(1e12).div(totalAmount).div(1e6);
   }
 
   // get the amount of IFO token you will get
   function getOfferingAmount(address _user) public view returns(uint256) {
-    require (userInfo[_user].amount > 0, 'have you participated?');
-    uint256 allocation = getUserAllocation(_user);
     if (totalAmount > raisingAmount) {
+      uint256 allocation = getUserAllocation(_user);
       return offeringAmount.mul(allocation).div(1e6);
     }
     else {
@@ -112,13 +111,16 @@ contract IFO is ReentrancyGuard {
 
   // get the amount of lp token you will be refunded
   function getRefundingAmount(address _user) public view returns(uint256) {
-    require (userInfo[_user].amount > 0, 'have you participated?');
-    uint256 allocation = getUserAllocation(_user);
     if (totalAmount <= raisingAmount) {
       return 0;
     }
+    uint256 allocation = getUserAllocation(_user);
     uint256 payAmount = raisingAmount.mul(allocation).div(1e6);
     return userInfo[_user].amount.sub(payAmount);
+  }
+
+  function getAddressListLength() external view returns(uint256) {
+    return addressList.length;
   }
 
   function finalWithdraw(uint256 _lpAmount, uint256 _offerAmount) public onlyAdmin {
