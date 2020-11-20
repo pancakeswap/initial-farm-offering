@@ -25,12 +25,12 @@ contract IFO is ReentrancyGuard {
   uint256 public startBlock;
   // The block number when IFO ends
   uint256 public endBlock;
-  // total amount of lptokens need to raise
+  // total amount of raising tokens need to be raised
   uint256 public raisingAmount;
-  // total amount of lptokens have raised
-  uint256 public totalAmount;
-  // total amount of offeringToken
+  // total amount of offeringToken that will offer
   uint256 public offeringAmount;
+  // total amount of raising tokens that have already raised
+  uint256 public totalAmount;
   // address => amount
   mapping (address => UserInfo) public userInfo;
   // participators
@@ -124,7 +124,6 @@ contract IFO is ReentrancyGuard {
   }
 
   function finalWithdraw(uint256 _lpAmount, uint256 _offerAmount) public onlyAdmin {
-    require (block.number > endBlock, 'not finalWithdraw time');
     require (_lpAmount < lpToken.balanceOf(address(this)), 'not enough token 0');
     require (_offerAmount < offeringToken.balanceOf(address(this)), 'not enough token 1');
     lpToken.safeTransfer(address(msg.sender), _lpAmount);
