@@ -10,15 +10,21 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed.bina
 module.exports = async function(deployer, a, account) {
     await deployer.deploy(IFOByProxy);
 
+    const num = 100000000 * Math.pow(10, 6);
+    const numAsHex = "0x" + num.toString(16);
+
+    const num1 = 149200 * Math.pow(10, 18);
+    const numAsHex1 = "0x" + num1.toString(16);
+
     const proxyAdmin= '0x0F9399FC81DaC77908A2Dde54Bb87Ee2D17a3373';
     const ifoAdmin= '0x35f16A46D3cf19010d28578A8b02DfA3CB4095a1';
 
-    const lpToken = '0xA527a61703D82139F8a06Bc30097cC9CAA2df5A6';
-    const offeringToken = '0x009cf7bc57584b7998236eff51b98a168dcea9b0';
-    const startBlock = '2401192';
-    const endBlock = '2402392';
-    const offeringAmount = '100';
-    const raisingAmount = '100000';
+    const lpToken = '0xA527a61703D82139F8a06Bc30097cC9CAA2df5A6'; //cake-bnb
+    const offeringToken = '0x63870a18b6e42b01ef1ad8a2302ef50b7132054f'; //blk
+    const startBlock = '2401100';
+    const endBlock = '2402320';
+    const offeringAmount = numAsHex;
+    const raisingAmount = numAsHex1;
     const adminAddress = ifoAdmin;
 
     const abiEncodeData = web3.eth.abi.encodeFunctionCall({
@@ -73,9 +79,9 @@ module.exports = async function(deployer, a, account) {
       adminAddress
     ]);
 
-    await deployer.deploy(IFOUpgradeProxy, IFOByProxy.address, proxyAdmin, abiEncodeData);
+    await deployer.deploy(IFOUpgradeProxy, proxyAdmin, IFOByProxy.address, abiEncodeData);
 
-    console.log(IFOByProxy.address, proxyAdmin, abiEncodeData);
+    console.log(proxyAdmin, IFOByProxy.address, abiEncodeData);
 
     // const lotteryProxy = new web3.eth.Contract(abi, IFOUpgradeProxy.address);
     // console.log((await lotteryProxy.methods.getAddressListLength().call()).toString())

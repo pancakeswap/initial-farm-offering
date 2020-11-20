@@ -4,7 +4,7 @@ import "@pancakeswap/pancake-swap-lib/contracts/proxy/TransparentUpgradeableProx
 
 contract IFOUpgradeProxy is TransparentUpgradeableProxy {
 
-    constructor(address logic, address admin, bytes memory data) TransparentUpgradeableProxy(logic, admin, data) public {
+    constructor(address admin, address logic, bytes memory data) TransparentUpgradeableProxy(logic, admin, data) public {
 
     }
 
