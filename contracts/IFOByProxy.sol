@@ -96,7 +96,9 @@ contract IFOByProxy is ReentrancyGuard, Initializable {
     require (!userInfo[msg.sender].claimed, 'nothing to harvest');
     uint256 offeringTokenAmount = getOfferingAmount(msg.sender);
     uint256 refundingTokenAmount = getRefundingAmount(msg.sender);
-    offeringToken.safeTransfer(address(msg.sender), offeringTokenAmount);
+    if (offeringTokenAmount > 0) {
+      offeringToken.safeTransfer(address(msg.sender), offeringTokenAmount);
+    }
     if (refundingTokenAmount > 0) {
       lpToken.safeTransfer(address(msg.sender), refundingTokenAmount);
     }
@@ -142,7 +144,9 @@ contract IFOByProxy is ReentrancyGuard, Initializable {
   function finalWithdraw(uint256 _lpAmount, uint256 _offerAmount) public onlyAdmin {
     require (_lpAmount < lpToken.balanceOf(address(this)), 'not enough token 0');
     require (_offerAmount < offeringToken.balanceOf(address(this)), 'not enough token 1');
+    if(_offerAmount > 0) {
+      offeringToken.safeTransfer(address(msg.sender), _offerAmount);
+    }
     lpToken.safeTransfer(address(msg.sender), _lpAmount);
-    offeringToken.safeTransfer(address(msg.sender), _offerAmount);
   }
 }
