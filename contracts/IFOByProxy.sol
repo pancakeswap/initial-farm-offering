@@ -147,6 +147,8 @@ contract IFOByProxy is ReentrancyGuard, Initializable {
     if(_offerAmount > 0) {
       offeringToken.safeTransfer(address(msg.sender), _offerAmount);
     }
-    lpToken.safeTransfer(address(msg.sender), _lpAmount);
+    if(_lpAmount > 0) {
+      lpToken.safeTransfer(address(msg.sender), _lpAmount);
+    }
   }
 }
